@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rxbus.TRxBus;
 import rxbus.event.BaseEvent;
 
@@ -15,6 +16,7 @@ public class Main2Activity extends AppCompatActivity {
 
     private TextView tv;
     private Observable<BaseEvent> observable;
+    private Subscription subscription;
     StringBuffer sb=new StringBuffer();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +25,7 @@ public class Main2Activity extends AppCompatActivity {
         setTitle("2");
         tv=(TextView) findViewById(R.id.tv);
         observable= TRxBus.Bus().register("test");
-        observable.subscribe(new Subscriber<BaseEvent>() {
+        subscription= observable.subscribe(new Subscriber<BaseEvent>() {
             @Override
             public void onCompleted() {
 
@@ -52,7 +54,7 @@ public class Main2Activity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if(observable!=null){
-            TRxBus.Bus().unregister("test",observable);
+            TRxBus.Bus().unregister("test",observable,subscription);
         }
     }
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.subjects.PublishSubject;
 import rx.subjects.SerializedSubject;
 import rx.subjects.Subject;
@@ -52,9 +53,12 @@ public class TRxBus {
     }
 
 
-    public void unregister(String tag,Observable observable){
+    public void unregister(String tag, Observable observable, Subscription subscription){
         List<SerializedSubject> list=mSubjectMapper.get(tag);
-        if(list!=null&&observable!=null){
+        if(list!=null&&observable!=null&&subscription!=null){
+             if(subscription.isUnsubscribed()){
+                 subscription.unsubscribe();
+             }
              list.remove((Subject) observable);
               if(list.size() ==0 ){
                   mSubjectMapper.remove(tag);
